@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Простой Тетрис на JavaScript</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="tetris" width="240" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById("tetris");
+    const context = canvas.getContext("2d");
+
+    // Размеры игрового поля
+    const ROWS = 20;
+    const COLUMNS = 10;
+    const BLOCK_SIZE = 20;
+
+    // Игровое поле (массив)
+    const board = Array.from({ length: ROWS }, () =>
+      Array(COLUMNS).fill(null)
+    );
+
+    // Функция для отрисовки квадрата
+    function drawSquare(x, y, color) {
+      context.fillStyle = color;
+      context.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+      context.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+    }
+
+    // Основная функция отрисовки игрового поля
+    function drawBoard() {
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLUMNS; col++) {
+          if (board[row][col]) {
+            drawSquare(col, row, board[row][col]);
+          } else {
+            drawSquare(col, row, "white");
+          }
+        }
+      }
+    }
+
+    // Инициализация и отрисовка пустого поля
+    drawBoard();
+
+    // Пример создания и отрисовки фигуры (прямоугольника)
+    const piece = {
+      x: 3,
+      y: 0,
+      shape: [
+        [1, 1],
+        [1, 1],
+      ],
+      color: "blue",
+    };
+
+    function drawPiece() {
+      piece.shape.forEach((row, rowIndex) => {
+        row.forEach((value, colIndex) => {
+          if (value) {
+            drawSquare(piece.x + colIndex, piece.y + rowIndex, piece.color);
+          }
+        });
+      });
+    }
+	
+	// collisions
+	
+
+    // Функция для очистки фигуры с поля
+    function clearPiece() {
+      piece.shape.forEach((row, rowIndex) => {
+        row.forEach((value, colIndex) => {
+          if (value) {
+            drawSquare(piece.x + colIndex, piece.y + rowIndex, "white");
+          }
+        });
+      });
+    }
+	
+	function checkCollisions(){
+      piece.shape.forEach((row, rowIndex) => {
+        row.forEach((value, colIndex) => {
+			console.log(row[piece.y]);
+          if (piece.y === 18 || row[piece.y +1] == 1) {
+            piece.x = 3;
+			piece.y = 0;
+          } else {
+			  clearPiece();
+		  }
+        });
+      });
+    }
+
+    // Функция для движения фигуры вниз
+    function moveDown() {
+     checkCollisions();
+      piece.y++;
+      
+	  drawPiece();
+    }
+	
+	 function moveRight() {
+      clearPiece();
+      piece.x++;
+      drawPiece();
+    }
+
+    // Обработчик нажатия клавиши для движения фигуры вниз
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown") {
+        moveDown();
+      }
+    });
+	
+	  document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") {
+        moveRight();
+      }
+    });
+    // Интервал для автоматического движения фигуры вниз
+    setInterval(moveDown, 1000);
+  </script>
+</body>
+</html>
