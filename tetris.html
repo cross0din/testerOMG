@@ -85,14 +85,11 @@
     }
 	
 	function checkCollisions(){
-      piece.shape.forEach((row, rowIndex) => {
-        row.forEach((value, colIndex) => {
-			console.log(row[piece.y]);
-          if (piece.y === 18 || row[piece.y +1] == 1) {
-            piece.x = 3;
-			piece.y = 0;
+      
+          if (piece.y === 18 || row[piece.y +1] == 1 || piece.x == COLUMNS || piece.x == 0) {
+            return true;
           } else {
-			  clearPiece();
+			 return false;
 		  }
         });
       });
